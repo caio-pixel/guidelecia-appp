@@ -1,53 +1,50 @@
-import React from 'react';
-import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
+import React from "react";
 
-const AboutScreen = () => {
+function PizzariaPage() {
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      {/* Título */}
-      <Text style={styles.title}>Conheça sobre a nossa pizzaria</Text>
-
-      {/* Descrição */}
-      <Text style={styles.description}>
-        muuuitas coisas{"\n"}sobre a{"\n"}pizzaaria........
-      </Text>
-
-      {/* Imagem da pizzaria */}
-      <Image
-        //  source={require('../assets/images/restaurante.png')} // Corrigido aqui
-         style={styles.pizzaImage}
-         resizeMode="cover"
+    <div style={styles.container}>
+      <h2 style={styles.title}>Conheça sobre a nossa pizzaria</h2>
+      <p style={styles.description}>
+        muuuitas coisas <br />
+        sobre a <br />
+        pizzaria........
+      </p>
+      <img
+        style={styles.image}
+        src="/assets/images/restaurante_po_dentro_1.jpg"
+        alt="Interior da pizzaria"
       />
-    </ScrollView>
+    </div>
   );
-};
+}
 
-export default AboutScreen;
-
-const styles = StyleSheet.create({
+const styles: Record<string, React.CSSProperties> = {
   container: {
-    flexGrow: 1,
-    alignItems: 'center',
-    paddingTop: 50,
-    paddingHorizontal: 20,
-    backgroundColor: '#fff',
+    maxWidth: 400,
+    margin: "0 auto",
+    textAlign: "center",
+    padding: "20px",
+    fontFamily: "'Arial', sans-serif",
   },
   title: {
-    color: '#4B3FFF',
-    fontSize: 16,
-    fontWeight: 'bold',
+    color: "#5757d1",
+    fontWeight: "bold",
+    fontSize: 18,
     marginBottom: 30,
-    textDecorationLine: 'underline',
   },
   description: {
-    fontSize: 20,
-    color: '#888',
-    textAlign: 'center',
-    marginBottom: 30,
+    color: "gray",
+    fontSize: 22,
+    fontWeight: 400,
+    marginBottom: 40,
+    lineHeight: 1.5,
+    whiteSpace: "pre-line", // mantém as quebras de linha do texto
   },
-  pizzaImage: {
-    width: 300,
-    height: 200,
-    borderRadius: 10,
+  image: {
+    width: "100%",
+    borderRadius: 8,
+    objectFit: "cover",
   },
-});
+};
+
+export default PizzariaPage;

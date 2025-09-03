@@ -34,3 +34,4 @@ const styles = StyleSheet.create({
   button: { flex: 1, marginHorizontal: 5, padding: 12, borderRadius: 8, alignItems: "center" },
   buttonText: { color: "#fff", fontSize: 16 },
 });
+

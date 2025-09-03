@@ -25,7 +25,10 @@ export default function AdminPage({ navigation }) {
         <Ionicons name="chevron-forward" size={24} color="#333" />
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.card}>
+      <TouchableOpacity style={styles.card}
+
+  onPress={() => navigation.navigate("ValorVendido")}>
+        
         <View>
           <Text style={styles.cardTitle}>Valor vendido</Text>
           <Text style={styles.cardSubtitle}>
@@ -34,18 +37,19 @@ export default function AdminPage({ navigation }) {
         </View>
         <Ionicons name="chevron-forward" size={24} color="#333" />
       </TouchableOpacity>
+<TouchableOpacity
+  style={styles.card}
+  onPress={() => navigation.navigate("AtualizarPerfil")}
+>
+  <View>
+    <Text style={styles.cardTitle}>Atualizar perfil</Text>
+    <Text style={styles.cardSubtitle}>
+      Algo explicando breve, qualquer coisa
+    </Text>
+  </View>
+  <Ionicons name="chevron-forward" size={24} color="#333" />
+</TouchableOpacity>
 
-      <TouchableOpacity style={styles.card}>
-        <View>
-          <Text style={styles.cardTitle}>Atualizar perfil</Text>
-          <Text style={styles.cardSubtitle}>
-            Algo explicando breve, qualquer coisa
-          </Text>
-        </View>
-        <Ionicons name="chevron-forward" size={24} color="#333" />
-      </TouchableOpacity>
-
-      {/* 🔽 Aqui eu só troquei para abrir a nova tela GerenciarPizzas */}
       <TouchableOpacity
         style={styles.card}
         onPress={() => navigation.navigate("GerenciarPizzas")}
