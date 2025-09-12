@@ -1,8 +1,31 @@
-import React from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  SafeAreaView,
+  Alert,
+  FlatList,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { usePizzas } from "../context/PizzaContext";
 
-export default function PizzaScreen() {
+export default function PizzaScreen({ navigation }: any) {
+  const { pizzas } = usePizzas(); // pega pizzas do contexto
+  const [categoria, setCategoria] = useState("salgadas");
+
+  // Função de compra
+  const comprarPizza = (pizza: any) => {
+    Alert.alert("Compra realizada!", `Você comprou: ${pizza.nome}`);
+  };
+
+  // Filtra pizzas pela categoria selecionada
+  const pizzasFiltradas = pizzas.filter(
+    (pizza) => pizza.categoria.toLowerCase() === categoria
+  );
+
   return (
     <SafeAreaView style={styles.container}>
       {/* Cabeçalho */}
@@ -14,68 +37,121 @@ export default function PizzaScreen() {
 
       {/* Categorias */}
       <View style={styles.categories}>
-        <Text style={styles.categoryItemBold}>Salgadas</Text>
-        <Text style={styles.categoryItem}>Doces</Text>
-        <Text style={styles.categoryItem}>Refris</Text>
-      </View>
-
-      {/* Card de pizza */}
-      <View style={styles.card}>
-        <Image
-          source={{ uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQjHS5V4_7TBs09Un_Yage5UFgy8olhPc3fw&s' }} // Exemplo de pizza
-          style={styles.pizzaImage}
-        />
-        <Text style={styles.cardTitle}>Pizza de Portuguesa</Text>
-        <Text style={styles.cardText}>Molho de tomate, muçarela, presunto, ovos cozidos, cebola e azeitonas. Uma combinação clássica e saborosa que agrada a todos.</Text>
-        <TouchableOpacity style={styles.buyButton}>
-          <Text style={styles.buyText}>Comprar</Text>
+        <TouchableOpacity onPress={() => setCategoria("salgadas")}>
+          <Text
+            style={
+              categoria === "salgadas"
+                ? styles.categoryItemBold
+                : styles.categoryItem
+            }
+          >
+            Salgadas
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setCategoria("doces")}>
+          <Text
+            style={
+              categoria === "doces"
+                ? styles.categoryItemBold
+                : styles.categoryItem
+            }
+          >
+            Doces
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setCategoria("refrigerantes")}>
+          <Text
+            style={
+              categoria === "refrigerantes"
+                ? styles.categoryItemBold
+                : styles.categoryItem
+            }
+          >
+            Refrigerantes
+          </Text>
         </TouchableOpacity>
       </View>
 
+      {/* Lista de pizzas */}
+      <FlatList
+        data={pizzasFiltradas}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <View style={styles.card}>
+            <Image
+              source={{
+                uri:
+                  item.img ||
+                  "https://cdn-icons-png.flaticon.com/512/1404/1404945.png",
+
+              }}
+              style={styles.pizzaImage}
+            />
+            <Text style={styles.cardTitle}>{item.nome}</Text>
+            <Text style={styles.cardText}>{item.descricao}</Text>
+            <Text style={styles.cardText}>R$ {item.preco.toFixed(2)}</Text>
+            <TouchableOpacity
+              style={styles.buyButton}
+              onPress={() => comprarPizza(item)}
+            >
+              <Text style={styles.buyText}>Comprar</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+        ListEmptyComponent={
+          <Text style={{ textAlign: "center", marginTop: 20, color: "gray" }}>
+            Nenhuma pizza cadastrada nesta categoria.
+          </Text>
+        }
+      />
+
       {/* Navegação inferior */}
       <View style={styles.bottomNav}>
-        <Ionicons name="person" size={24} color="black" />
-        <Ionicons name="home" size={24} color="purple" />
-        <Ionicons name="cart" size={24} color="black" />
+        <TouchableOpacity onPress={() => navigation.navigate("Conta")}>
+          <Ionicons name="person" size={24} color="black" />
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => navigation.navigate("Home")}>
+          <Ionicons name="home" size={24} color="#fff" />
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => navigation.navigate("Carrinho")}>
+          <Ionicons name="cart" size={24} color="black" />
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
+  container: { flex: 1, backgroundColor: "#fff" },
   header: {
-    backgroundColor: '#008b45',
+    backgroundColor: "#008b45",
     padding: 15,
     borderRadius: 10,
     margin: 10,
   },
   headerText: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
   },
   categories: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+    flexDirection: "row",
+    justifyContent: "space-around",
     marginVertical: 15,
   },
-  categoryItem: {
-    fontSize: 16,
-    fontWeight: 'normal',
-  },
+  categoryItem: { fontSize: 16, fontWeight: "normal", color: "black" },
   categoryItemBold: {
     fontSize: 16,
-    fontWeight: 'bold',
-    textDecorationLine: 'underline',
+    fontWeight: "bold",
+    textDecorationLine: "underline",
+    color: "purple",
   },
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 10,
-    boxShadow: "black", 
+    elevation: 5,
     padding: 15,
     margin: 15,
   },
@@ -83,39 +159,36 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    alignSelf: 'center',
+    alignSelf: "center",
     marginBottom: 10,
   },
   cardTitle: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     fontSize: 16,
-    textAlign: 'center',
-    color: 'black',
+    textAlign: "center",
+    color: "black",
   },
   cardText: {
-    color: 'black',
-    textAlign: 'center',
-    marginVertical: 10,
+    color: "black",
+    textAlign: "center",
+    marginVertical: 5,
   },
   buyButton: {
-    backgroundColor: 'white',
+    backgroundColor: "#CD212A",
     borderRadius: 5,
     paddingHorizontal: 15,
     paddingVertical: 5,
-    alignSelf: 'center',
+    alignSelf: "center",
   },
-  buyText: {
-    color: 'black',
-    fontWeight: 'bold',
-  },
+  buyText: { color: "white", fontWeight: "bold" },
   bottomNav: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+    flexDirection: "row",
+    justifyContent: "space-around",
     padding: 15,
-    backgroundColor: '#CD212A',
-    position: 'absolute',
+    backgroundColor: "#CD212A",
+    position: "absolute",
     bottom: 0,
-    width: '100%',
+    width: "100%",
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
   },

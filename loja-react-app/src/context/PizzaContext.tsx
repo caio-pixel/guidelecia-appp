@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
 
 type PizzaType = {
+  img: string;
   id: number;
   nome: string;
   categoria: string;

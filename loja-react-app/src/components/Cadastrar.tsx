@@ -14,7 +14,7 @@ export default function Cadastrar() {
   const { pizzas, addPizza, updatePizza, deletePizza } = usePizzas();
 
   const [nome, setNome] = useState("");
-  const [categoria, setCategoria] = useState("");
+  const [categoria, setCategoria] = useState<"salgadas" | "doces" | "refrigerantes" | "">("");
   const [descricao, setDescricao] = useState("");
   const [preco, setPreco] = useState("");
   const [editandoId, setEditandoId] = useState<number | null>(null);
@@ -31,6 +31,7 @@ export default function Cadastrar() {
       categoria,
       descricao,
       preco: parseFloat(preco),
+      img: "",
     });
 
     resetForm();
@@ -45,6 +46,7 @@ export default function Cadastrar() {
       categoria,
       descricao,
       preco: parseFloat(preco),
+      img: "",
     });
 
     resetForm();
@@ -79,9 +81,42 @@ export default function Cadastrar() {
         {editandoId ? "Editar Pizza" : "Cadastrar Pizza"}
       </Text>
 
-      <TextInput style={styles.input} placeholder="Nome" value={nome} onChangeText={setNome} />
-      <TextInput style={styles.input} placeholder="Categoria" value={categoria} onChangeText={setCategoria} />
-      <TextInput style={styles.input} placeholder="Descrição" value={descricao} onChangeText={setDescricao} />
+      <TextInput
+        style={styles.input}
+        placeholder="Nome"
+        value={nome}
+        onChangeText={setNome}
+      />
+
+      {/* Botões de categoria */}
+      <View style={styles.categoryContainer}>
+        {["salgadas", "doces", "refrigerantes"].map((cat) => (
+          <TouchableOpacity
+            key={cat}
+            style={[
+              styles.categoryButton,
+              categoria === cat && styles.categoryButtonSelected,
+            ]}
+            onPress={() => setCategoria(cat as any)}
+          >
+            <Text
+              style={[
+                styles.categoryText,
+                categoria === cat && styles.categoryTextSelected,
+              ]}
+            >
+              {cat.charAt(0).toUpperCase() + cat.slice(1)}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      <TextInput
+        style={styles.input}
+        placeholder="Descrição"
+        value={descricao}
+        onChangeText={setDescricao}
+      />
       <TextInput
         style={styles.input}
         placeholder="Preço"
@@ -90,9 +125,12 @@ export default function Cadastrar() {
         onChangeText={setPreco}
       />
 
-      <TouchableOpacity style={styles.button} onPress={editandoId ? handleUpdate : handleAdd}>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={editandoId ? handleUpdate : handleAdd}
+      >
         <Text style={styles.buttonText}>
-          {editandoId ? "Salvar Alterações" : "Adicionar Pizza"}
+          {editandoId ? "Salvar Alterações" : "Adicionar"}
         </Text>
       </TouchableOpacity>
 
@@ -106,13 +144,21 @@ export default function Cadastrar() {
                 🍕 {item.nome} - R$ {item.preco.toFixed(2)}
               </Text>
               <Text style={styles.pizzaDetails}>{item.descricao}</Text>
-              <Text style={styles.pizzaDetails}>Categoria: {item.categoria}</Text>
+              <Text style={styles.pizzaDetails}>
+                Categoria: {item.categoria}
+              </Text>
             </View>
             <View style={styles.actions}>
-              <TouchableOpacity style={styles.editButton} onPress={() => startEditing(item)}>
+              <TouchableOpacity
+                style={styles.editButton}
+                onPress={() => startEditing(item)}
+              >
                 <Text style={styles.actionText}>Editar</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.deleteButton} onPress={() => handleDelete(item.id)}>
+              <TouchableOpacity
+                style={styles.deleteButton}
+                onPress={() => handleDelete(item.id)}
+              >
                 <Text style={styles.actionText}>Excluir</Text>
               </TouchableOpacity>
             </View>
@@ -125,14 +171,56 @@ export default function Cadastrar() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 20, backgroundColor: "#fff" },
-  title: { fontSize: 22, fontWeight: "bold", marginBottom: 20, color: "#5a4ce0" },
-  input: { backgroundColor: "#f0f0f0", padding: 12, borderRadius: 5, marginBottom: 10 },
-  button: { backgroundColor: "#5a4ce0", padding: 15, borderRadius: 5, alignItems: "center", marginBottom: 20 },
+  title: {
+    fontSize: 22,
+    fontWeight: "bold",
+    marginBottom: 20,
+    color: "#5a4ce0",
+  },
+  input: {
+    backgroundColor: "#f0f0f0",
+    padding: 12,
+    borderRadius: 5,
+    marginBottom: 10,
+  },
+  button: {
+    backgroundColor: "#5a4ce0",
+    padding: 15,
+    borderRadius: 5,
+    alignItems: "center",
+    marginBottom: 20,
+  },
   buttonText: { color: "#fff", fontWeight: "bold" },
-  pizzaItem: { backgroundColor: "#f9f9f9", padding: 12, marginVertical: 5, borderRadius: 5 },
+  categoryContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginBottom: 10,
+  },
+  categoryButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 15,
+    borderRadius: 5,
+    backgroundColor: "#e0e0e0",
+  },
+  categoryButtonSelected: {
+    backgroundColor: "#5a4ce0",
+  },
+  categoryText: { color: "#000", fontWeight: "bold" },
+  categoryTextSelected: { color: "#fff" },
+  pizzaItem: {
+    backgroundColor: "#f9f9f9",
+    padding: 12,
+    marginVertical: 5,
+    borderRadius: 5,
+  },
   pizzaText: { fontSize: 16, fontWeight: "bold" },
   pizzaDetails: { fontSize: 14, color: "#555" },
-  actions: { flexDirection: "row", marginTop: 8, justifyContent: "flex-end", gap: 10 },
+  actions: {
+    flexDirection: "row",
+    marginTop: 8,
+    justifyContent: "flex-end",
+    gap: 10,
+  },
   editButton: { backgroundColor: "#ffa500", padding: 8, borderRadius: 5 },
   deleteButton: { backgroundColor: "red", padding: 8, borderRadius: 5 },
   actionText: { color: "#fff", fontWeight: "bold" },
