@@ -11,20 +11,34 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { usePizzas } from "../context/PizzaContext";
+import { useCarrinho } from "../context/CarrinhoContext";
 
 export default function PizzaScreen({ navigation }: any) {
-  const { pizzas } = usePizzas(); // pega pizzas do contexto
+  const { pizzas } = usePizzas();
+  const { adicionarAoCarrinho, carrinho } = useCarrinho();
   const [categoria, setCategoria] = useState("salgadas");
 
-  // Função de compra
   const comprarPizza = (pizza: any) => {
-    Alert.alert("Compra realizada!", `Você comprou: ${pizza.nome}`);
+    adicionarAoCarrinho(pizza);
+    Alert.alert("Adicionado ao carrinho!", `${pizza.nome} foi adicionado.`);
   };
 
-  // Filtra pizzas pela categoria selecionada
   const pizzasFiltradas = pizzas.filter(
     (pizza) => pizza.categoria.toLowerCase() === categoria
   );
+
+  const getImagemPadrao = (categoria: string) => {
+    switch (categoria.toLowerCase()) {
+      case "salgadas":
+        return "https://cdn-icons-png.flaticon.com/512/1404/1404945.png"; // pizza salgada
+      case "doces":
+        return "https://cdn-icons-png.flaticon.com/128/3465/3465218.png"; // chocolate
+      case "refrigerantes":
+        return "https://cdn-icons-png.flaticon.com/128/590/590685.png"; // refrigerante (Coca-Cola)
+      default:
+        return "https://cdn-icons-png.flaticon.com/512/1404/1404945.png"; // fallback
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -37,7 +51,16 @@ export default function PizzaScreen({ navigation }: any) {
 
       {/* Categorias */}
       <View style={styles.categories}>
-        <TouchableOpacity onPress={() => setCategoria("salgadas")}>
+        {/* Salgadas */}
+        <TouchableOpacity
+          onPress={() => setCategoria("salgadas")}
+          style={styles.categoryBtn}
+        >
+          <Ionicons
+            name="pizza-outline"
+            size={18}
+            color={categoria === "salgadas" ? "purple" : "black"}
+          />
           <Text
             style={
               categoria === "salgadas"
@@ -48,7 +71,18 @@ export default function PizzaScreen({ navigation }: any) {
             Salgadas
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => setCategoria("doces")}>
+
+        {/* Doces */}
+        <TouchableOpacity
+          onPress={() => setCategoria("doces")}
+          style={styles.categoryBtn}
+        >
+          <Image
+            source={{
+              uri: "https://cdn-icons-png.flaticon.com/128/3465/3465218.png", // chocolate
+            }}
+            style={{ width: 18, height: 18 }}
+          />
           <Text
             style={
               categoria === "doces"
@@ -59,7 +93,18 @@ export default function PizzaScreen({ navigation }: any) {
             Doces
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => setCategoria("refrigerantes")}>
+
+        {/* Refrigerantes */}
+        <TouchableOpacity
+          onPress={() => setCategoria("refrigerantes")}
+          style={styles.categoryBtn}
+        >
+          <Image
+            source={{
+              uri: "https://cdn-icons-png.flaticon.com/128/7491/7491338.png", // Coca-Cola
+            }}
+            style={{ width: 18, height: 18 }}
+          />
           <Text
             style={
               categoria === "refrigerantes"
@@ -72,18 +117,15 @@ export default function PizzaScreen({ navigation }: any) {
         </TouchableOpacity>
       </View>
 
-      {/* Lista de pizzas */}
+      {/* Lista de produtos */}
       <FlatList
         data={pizzasFiltradas}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item, index) => `${item.id}-${index}`}
         renderItem={({ item }) => (
           <View style={styles.card}>
             <Image
               source={{
-                uri:
-                  item.img ||
-                  "https://cdn-icons-png.flaticon.com/512/1404/1404945.png",
-
+                uri: item.img || getImagemPadrao(item.categoria),
               }}
               style={styles.pizzaImage}
             />
@@ -100,7 +142,7 @@ export default function PizzaScreen({ navigation }: any) {
         )}
         ListEmptyComponent={
           <Text style={{ textAlign: "center", marginTop: 20, color: "gray" }}>
-            Nenhuma pizza cadastrada nesta categoria.
+            Nenhum produto cadastrado nesta categoria.
           </Text>
         }
       />
@@ -115,8 +157,16 @@ export default function PizzaScreen({ navigation }: any) {
           <Ionicons name="home" size={24} color="#fff" />
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => navigation.navigate("Carrinho")}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("Carrinho")}
+          style={{ position: "relative" }}
+        >
           <Ionicons name="cart" size={24} color="black" />
+          {carrinho.length > 0 && (
+            <View style={styles.badge}>
+              <Text style={styles.badgeText}>{carrinho.length}</Text>
+            </View>
+          )}
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -140,6 +190,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     marginVertical: 15,
+  },
+  categoryBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
   },
   categoryItem: { fontSize: 16, fontWeight: "normal", color: "black" },
   categoryItemBold: {
@@ -191,5 +246,22 @@ const styles = StyleSheet.create({
     width: "100%",
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
+  },
+  badge: {
+    position: "absolute",
+    right: -8,
+    top: -5,
+    backgroundColor: "#008b45",
+    borderRadius: 10,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    minWidth: 20,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  badgeText: {
+    color: "white",
+    fontSize: 12,
+    fontWeight: "bold",
   },
 });

@@ -26,7 +26,7 @@ export default function Cadastrar() {
     }
 
     addPizza({
-      id: 0, // será substituído pelo contexto
+      id: Date.now(), // garante que cada pizza tenha um ID único
       nome,
       categoria,
       descricao,
@@ -136,10 +136,13 @@ export default function Cadastrar() {
 
       <FlatList
         data={pizzas}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item, index) => `${item.id}-${index}`} // 🔑 garante chave única
         renderItem={({ item }) => (
           <View style={styles.pizzaItem}>
             <View>
+              <Text>
+                {item.id}
+              </Text>
               <Text style={styles.pizzaText}>
                 🍕 {item.nome} - R$ {item.preco.toFixed(2)}
               </Text>

@@ -8,8 +8,8 @@ export default function LoginClient() {
   const [senha, setSenha] = useState('');
 
   // credenciais fixas do ADM
-  const adminEmail = "admin@pizzaria.com"
-  const adminSenha = "123";
+  const adminEmail = "m"
+  const adminSenha = "1";
 
   const handleLogin = () => {
     if (email === adminEmail && senha === adminSenha) {

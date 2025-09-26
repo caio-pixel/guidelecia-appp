@@ -2,7 +2,10 @@ import { StatusBar } from "expo-status-bar";
 import { StyleSheet } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+
 import { PizzaProvider } from "./src/context/PizzaContext";
+import { VendaProvider } from "./src/context/VendaContext";
+import { CarrinhoProvider } from "./src/context/CarrinhoContext";
 
 // Telas
 import Cadastrar from "./src/components/Cadastrar"
@@ -15,33 +18,40 @@ import CodeVerification from "./src/components/CodeVerification";
 import NewPassword from "./src/components/NewPassword";
 import SobrePizzaria from "./src/components/SobrePizzaria";
 import AdminPage from "./src/components/adminPage";
-
-
+import ValorVendido from "./src/components/ValorVendido";
+import Carrinho from "./src/components/Carrinho"; // nova tela carrinho
+import FinishBuy from "./src/components/FinishBuy";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
     <PizzaProvider>
-      <NavigationContainer>
-        <StatusBar style="auto" />
-        <Stack.Navigator initialRouteName="LoginCliente">
-          <Stack.Screen
-            name="LoginCliente"
-            component={LoginCliente}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen name="Cardapio" component={PizzaAppMenu} />
-          <Stack.Screen name="Create" component={Create} />
-          <Stack.Screen name="Gerenciar" component={GerenciarPizzas} />
-          <Stack.Screen name="ResetPassword" component={ResetPassword} />
-          <Stack.Screen name="SobrePizzaria" component={SobrePizzaria} />
-          <Stack.Screen name="adminPage" component={AdminPage} />
-          <Stack.Screen name="Cadastrar" component={Cadastrar} />
-          <Stack.Screen name='CodeVerification' component={CodeVerification} />
-          <Stack.Screen name="NewPassword" component={NewPassword} />
-
-        </Stack.Navigator>
-      </NavigationContainer>
+      <VendaProvider>
+        <CarrinhoProvider>
+          <NavigationContainer>
+            <StatusBar style="auto" />
+            <Stack.Navigator initialRouteName="LoginCliente">
+              <Stack.Screen
+                name="LoginCliente"
+                component={LoginCliente}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen name="Cardapio" component={PizzaAppMenu} />
+              <Stack.Screen name="Create" component={Create} />
+              <Stack.Screen name="Gerenciar" component={GerenciarPizzas} />
+              <Stack.Screen name="ResetPassword" component={ResetPassword} />
+              <Stack.Screen name="SobrePizzaria" component={SobrePizzaria} />
+              <Stack.Screen name="adminPage" component={AdminPage} />
+              <Stack.Screen name="Cadastrar" component={Cadastrar} />
+              <Stack.Screen name="CodeVerification" component={CodeVerification} />
+              <Stack.Screen name="NewPassword" component={NewPassword} />
+              <Stack.Screen name="ValorVendido" component={ValorVendido} />
+              <Stack.Screen name="Carrinho" component={Carrinho} />
+              <Stack.Screen name="FinishBuy" component={FinishBuy} />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </CarrinhoProvider>
+      </VendaProvider>
     </PizzaProvider>
   );
 }
